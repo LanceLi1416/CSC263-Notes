@@ -1,0 +1,38 @@
+\chapter{Priority Queues and Heaps}
+
+\begin{minipage}[t]{0.45\linewidth}
+    \textbf{Data}
+    
+    \listu{
+        \item Collection of elements
+    
+        \item Each element $x$ has a priority 
+
+        \texttt{x.priority}
+    }
+\end{minipage}
+\begin{minipage}[t]{0.45\linewidth}
+    \textbf{Operations}
+    
+    \listu{
+        \item \textsc{Insert}$(Q, x)$
+        
+        Add $x$ to $Q$ 
+        
+        Note: \texttt{x.priority} can be non-unique
+
+        \item \textsc{Max}$(Q)$
+        
+        Return the element with max priority
+
+        Note: $Q$ is unchanged
+
+        \item \textsc{Extract-Max}$(Q)$
+        
+        Remove and return the element with the max priority
+    }
+\end{minipage}
+
+\section{Implementation}
+
+\subsection{Implementation 1: unsorted linked list}
