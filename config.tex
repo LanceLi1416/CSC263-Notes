@@ -11,7 +11,7 @@
 % \setlength{\parskip}{5pt}
 
 %-----------------
-%   Colores
+%   Colours
 %-----------------
 \definecolor{thmbg}{HTML}{F2F2F9}
 \definecolor{lemmabg}{HTML}{FFFAF8}
@@ -24,6 +24,17 @@
 \definecolor{greybg}{RGB}{249, 249, 249}
 \definecolor{MyGrey}{HTML}{5B5B5B}
 
+\definecolor{LightBlue}{rgb}{0.0, 0.64, 1.0}
+\definecolor{LightRed}{rgb}{1.0, 0.50, 0.50}
+\definecolor{DarkGreen}{rgb}{0.31, 0.54, 0.30}
+
+%----------------
+%	Text Styles
+%----------------
+
+\DeclareTextFontCommand{\term}{\color{orange}\itshape}
+\DeclareTextFontCommand{\bred}{\color{red}\bfseries}
+\DeclareTextFontCommand{\itblue}{\color{LightBlue}\itshape}
 
 %----------------
 %   URL Colour
@@ -238,6 +249,20 @@
 % Sub sections
 %================
 \subsectionfont{\Large\color{primary}}
+
+
+%-----------------
+%	BIBLIOGRAPHY AND INDEX
+%-----------------
+
+\usepackage{csquotes}
+\usepackage[style=alphabetic,citestyle=numeric,sorting=nyt,sortcites=true,autopunct=true,autolang=hyphen,hyperref=true,abbreviate=false,backref=true,backend=biber,defernumbers=true]{biblatex}
+\addbibresource{./bibliography.bib} % BibTeX bibliography file
+\defbibheading{bibempty}{}
+
+\usepackage{calc} % For simpler calculation - used for spacing the index letter headings correctly
+\usepackage{makeidx} % Required to make an index
+\makeindex % Tells LaTeX to create the files required for indexing
 
 %---------------------
 % Front page
