@@ -216,43 +216,28 @@ For example, consider \textsc{Insert}$(H, 17)$ where $H = [16, 8, 10, 1, 5, 3]$
     \draw[bend left=60, dashed,latex-latex,color=red!50]  (17) to (16);
 \end{tikzpicture} \end{center} \end{minipage}
 
-{~~~}
-
-{~~~}
-
-{~~~}
-
-\textsc{Max-Heap-Insert}$(H, p)$:
-
-    $i = H.\textit{heap-size} = H.\textit{heap-size} + 1$
-
-    $H[i] = p$
-
-    \textbf{while} $\textsc{Parent}(i) > 0$ \textbf{and} $H[i] > H[\textsc{Parent}(i)]$:
-
-          swap $H[i]$ with $H[\textsc{Parent}[i]]$
-
-          $i = \textsc{Parent}(i)$
+\begin{algorithm}[H] \begin{algorithmic}
+    \Procedure{Max-Heap-Insert}{$H$, $p$}
+        \State $i \gets H.\textit{heap-size} \gets H.\textit{heap-size} + 1$
+        \State $H[i] = p$
+        \While{$\textsc{Parent}(i) > 0$ \textbf{and} $H[i] > H[\textsc{Parent}(i)]$}
+            \State swap $H[i]$ with $H[\textsc{Parent}[i]]$
+            \State $i \gets \textsc{Parent}(i)$
+        \EndWhile
+    \EndProcedure
+\end{algorithmic} \end{algorithm}
 
 \subsection{\textsc{Find-Max}}
 
-\begin{minipage}[t]{0.45\linewidth}
-    To find the maximum key in the heap $H$, 
+To find the maximum key in the heap $H$, 
 
-    \listu{
-        \item Simply return the item in the root
+\listu{
+    \item Simply return the item in the root
 
-        \item Worst-case runtime: $\Theta(1)$
-    }
+    \item Worst-case runtime: $\Theta(1)$
+}
 
-    {~~~}
-
-    \textsc{Find-Max}$(H)$
-    \begin{enumerate}[label=\arabic*] \setlist{nosep}
-        \item {~~~} \textbf{return} $H[1]$
-    \end{enumerate}
-\end{minipage}%
-\begin{minipage}[t]{0.45\linewidth} \begin{center} \begin{tikzpicture} [
+\begin{center} \begin{tikzpicture} [
     every node/.style = {circle, fill=Violet, minimum size=2em}, 
     level 1/.style={sibling distance=6em}, 
     level 2/.style={sibling distance=3em}, 
@@ -272,4 +257,158 @@ For example, consider \textsc{Insert}$(H, 17)$ where $H = [16, 8, 10, 1, 5, 3]$
     };
     
     \draw[bend left=30, dashed, -latex, color=red!50] (-1.25,0.5) to (-0.25,0.5);
+\end{tikzpicture} \end{center}
+
+\begin{algorithm}[H] \begin{algorithmic}[1]
+    \Procedure{Find-Max}{$H$}
+        \State \Return $H[1]$
+    \EndProcedure
+\end{algorithmic} \end{algorithm}
+
+\subsection{\textsc{Extract-Max}}
+
+\listu {
+    \item Save the item from the root in a temporary variable
+    \item Replace the root with the rightmost item in the lowest level of the tree and decrement $H$.\textit{heap-size}
+    \item Repeatedly swap the item we moved with its largest child until the heap property is restored. This swapping process is called \bred{bubble down}.
+    \item Worst-case runtime: $\Theta(\lg n)$
+}
+
+\begin{minipage}[t]{0.32\linewidth} \begin{center} \begin{tikzpicture} [
+    every node/.style = {circle, fill=Violet, minimum size=2em}, 
+    level 1/.style={sibling distance=6em}, 
+    level 2/.style={sibling distance=3em}, 
+    level 3/.style={sibling distance=1.5em},
+    baseline=(current bounding box.north)
+]
+    \node[fill=red!50] (root) {$17$}
+    child {
+        node {$8$} 
+        child { node {$1$} }
+        child { node {$5$} }
+    }
+    child { 
+        node (16) {$16$}     
+        child { node {$3$} }
+        child { node {$10$} }
+    };
+
+    \node[left of=root, node distance=2cm] (17) {$17$};
+    
+    \draw[dashed, -latex, color=red!50] (root) to (17);
+    \draw[bend right=60, dashed, -latex, color=red!50] (10) to (root);
 \end{tikzpicture} \end{center} \end{minipage}
+\begin{minipage}[t]{0.32\linewidth} \begin{center} \begin{tikzpicture} [
+    every node/.style = {circle, fill=Violet, minimum size=2em}, 
+    level 1/.style={sibling distance=6em}, 
+    level 2/.style={sibling distance=3em}, 
+    level 3/.style={sibling distance=1.5em},
+    baseline=(current bounding box.north)
+]
+    \node[fill=red!50] (root) {$10$}
+    child {
+        node {$8$} 
+        child { node {$1$} }
+        child { node {$5$} }
+    }
+    child { 
+        node (16) {$16$}     
+        child { node {$3$} }
+        child[missing]
+    };
+    
+    \draw[bend left=60, dashed, latex-latex, color=red!50] (root) to (16);
+\end{tikzpicture} \end{center} \end{minipage}
+\begin{minipage}[t]{0.32\linewidth} \begin{center} \begin{tikzpicture} [
+    every node/.style = {circle, fill=Violet, minimum size=2em}, 
+    level 1/.style={sibling distance=6em}, 
+    level 2/.style={sibling distance=3em}, 
+    level 3/.style={sibling distance=1.5em},
+    baseline=(current bounding box.north)
+]
+    \node (root) {$16$}
+    child {
+        node {$8$} 
+        child { node {$1$} }
+        child { node {$5$} }
+    }
+    child { 
+        node[fill=red!50] (10) {$10$}     
+        child { node {$3$} }
+        child[missing]
+    };
+    
+    \draw[bend left=60, dashed, latex-latex, color=red!50] (root) to (16);
+\end{tikzpicture} \end{center} \end{minipage}
+
+\begin{algorithm}[H] \begin{algorithmic}[1]
+    \Procedure{Extract-Max}{$H$}
+        \State $\textit{max} \gets H[1]$
+
+        \State $H[1] \gets H[H.\textit{heap-size}]$
+
+        \State $H.\textit{heap-size} \gets H.\textit{heap-size} - 1$
+
+        \State \textsc{Max-Heapify}$(H, 1)$
+
+        \State \textbf{return} \textit{max}
+    \EndProcedure
+\end{algorithmic} \end{algorithm}
+
+\begin{algorithm}[H] \begin{algorithmic}[1]
+    \Procedure{Max-Heapify}{$H$, $i$}
+        \State $l \gets \textsc{Left}(i)$
+        \State $r \gets \textsc{Right}(i)$
+
+        \If {$l \leq H.\textit{heap-size}$ \textbf{and} $H[l] > H[i]$}
+            \State $\textit{largest} \gets l$
+        \Else
+            \State $\textit{largest} \gets i$
+        \EndIf
+
+        \If {$r \leq H.\textit{heap-size}$ \textbf{and} $H[r] > H[\textit{largest}]$}
+            \State $\textit{largest} \gets r$
+        \EndIf
+
+        \If {$\textit{largest} \neq i$}
+            \State swap $H[i]$ with $H[\textit{largest}]$
+            \State \textsc{Max-Heapify}$(H, \textit{largest})$
+        \EndIf
+    \EndProcedure
+\end{algorithmic} \end{algorithm}
+
+\subsection{\textsc{Build-Max-Heap}}
+
+\listu {
+    \item Takes an array $A$ of length $n$ and builds a max-heap $H$ from it.
+    \item Worst-case runtime: $\Theta(n)$
+}
+
+\begin{algorithm}[H] \begin{algorithmic}[1]
+    \Procedure{Build-Max-Heap}{$A$}
+        \State $H.\textit{heap-size} \gets A.\textit{length}$
+        \For {$i = \lfloor \frac{A.\textit{length}}{2} \rfloor$ \textbf{downto} $1$}
+            \State \textsc{Max-Heapify}$(H, i)$
+        \EndFor
+    \EndProcedure
+\end{algorithmic} \end{algorithm}
+
+\section{Applications}
+
+\subsection{Heap Sort}
+
+\begin{minipage}[t]{0.45\linewidth}
+    Implementation 1:
+
+    \listu {
+        \item Run \textsc{Build-Max-Heap}$(A)$
+        \item Run \textsc{Extract-Max}$(A)$ for $n - 1$ times
+    }
+\end{minipage}
+\begin{minipage}[t]{0.45\linewidth}
+    Implementation 2:
+
+    \listu {
+        \item We modify the \textsc{Extract-Max} algorithm to swap the root with the last item
+    }
+\end{minipage}
