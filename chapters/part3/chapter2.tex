@@ -100,13 +100,71 @@ In the \term{aggregated method}\index{Amortized Analysis!Aggregated Method}, we 
     Thus, $T(k)$ is $\Theta(k^2)$. The amortized cost per operation is $\frac{T(k)}{k} = \Theta(k)$.
 }
 
+\example {
+    Consider a $k$ digit binary counter. 
+
+    In this problem, we count the total number of bits changed in the counter. We can do this by counting the number of times each bit changes.
+
+    \begin{center} \begin{tabular}{c c}
+        Bit Number & Number of Changes       \\
+        \hline
+        0          & $m$                     \\
+        1          & $\approx \frac{m}{2}$   \\
+        2          & $\approx \frac{m}{4}$   \\
+        $\vdots$   & $\vdots$                \\
+        $i$        & $\approx \frac{m}{2^i}$ \\
+        $\vdots$   & $\vdots$
+    \end{tabular} \end{center}
+
+    Then, $\begin{aligned}[t]
+        T & = \sum_{i=0}^{(\lg m)-1} \frac{m}{2^i}       \\
+          & = m \cdot \sum_{i=0}^{(\lg m)} \frac{1}{2^i} \\
+          & < m \sum_{i=0}^{\infty} \frac{1}{2^i}        \\
+          & = 2m
+    \end{aligned}$
+}
+
 \section{Accounting Method}
 
 The \term{accounting method}\index{Amortized Analysis!Accounting Method} is a form of aggregate analysis which assigns to each operation an amortized cost which may differ from its actual cost. Early operations have an amortized cost higher than their actual cost, which accumulates a saved ``credit'' that pays for later operations having an amortized cost lower than their actual cost. Because the credit begins at zero, the actual cost of a sequence of operations equals the amortized cost minus the accumulated credit. Because the credit is required to be non-negative, the amortized cost is an upper bound on the actual cost. Usually, many short-running operations accumulate such credit in small increments, while rare long-running operations decrease it drastically.
 
 \example {
     \label{exam:amortized_accounting}
-    Consider \hyperref[algo:da_insert]{\textsc{Insert}} for dynamic array.
+    Consider a sequence of $m$ \hyperref[algo:da_insert]{\textsc{Insert}} for dynamic array.
 
+    Recall that the ``cost'' is the actual run-time, while the ``charge'' is the estimated amortized time.
 
+    Note that for $k = 2^n + 1$, we need $2^n = k - 1$ for reading and $2^n + 1 = k$ for writing. Thus, the cost is $2k + 1$.
+
+    Then, we know that $\text{cost}(\textsc{Insert}(k)) = \begin{cases}
+        2k + 1 & \text{if } k = 2^n + 1 \\
+        1      & \text{otherwise}
+    \end{cases}$
+
+    Define $\text{charge}(\textsc{Insert}(k)) = \$5$. We need $\$1$ for writing the new element, and save $\$4$ as credit. 
+
+    We need to prove our credit invariant: every element in the second half of the array has $\$4$ credit.
+
+    \begin{proof}
+        Proof by induction on the number of operations done. 
+
+        \begin{itemize}
+            \item init: $0$ elements, $0$ credits
+            \item Consider one \textsc{Insert}
+            Assuming credit invariant holds
+
+            \begin{itemize}
+                \item If the array does not grow, then the new element gets $\$4$ credit. The credit invariant holds.
+                \item If the array does grow, it must be full, the total credits is $\$4 \cdot \frac{n}{2} = \$2n$, enough toi cover copying $n$ elements. The new element gets $\$4$ credit. The credit invariant holds.
+            \end{itemize}
+        \end{itemize}
+    \end{proof}
+
+    Thus, $\begin{aligned}[t]
+        \text{Amortized} \le \frac{\text{WCSC}}{m} & = \frac{\text{total cost}}{m}      \\
+                                                   & \le \frac{\text{total charge}}{m}
+                                                   & \text{because of credit invariant} \\
+                                                   & = \frac{5m}{m}                     \\
+                                                   & = 5
+    \end{aligned}$
 }

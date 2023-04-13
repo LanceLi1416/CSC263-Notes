@@ -634,4 +634,4 @@ In close addressing, we use a linked list to store the items in each bucket. Eac
 
 The average-case performance of the hash table depends on how evenly the hash function $h$ distributes the keys across the buckets in the table. The \term{simple uniform hashing assumption}(SUHA)\index{Hash Table!Simple Uniform Hashing Assumption} states that any given key is equally likely to hash into any of the $m$ slots of the table, independently of where any other elements has hashed to. Under this assumption, the expected number of keys in each bucket is the same. 
 
-The expected number of keys in a bucket is $\frac{n}{n}$, where $n$ is the number of items in the table and $m$ is the size of the table. This ratio is called the \term{load factor}\index{Hash Table!load factor} of the hash table, and we denote it by $\alpha$.
+The expected number of keys in a bucket is $\frac{n}{m}$, where $n$ is the number of items in the table and $m$ is the size of the table. This ratio is called the \term{load factor}\index{Hash Table!load factor} of the hash table, and we denote it by $\alpha$.
