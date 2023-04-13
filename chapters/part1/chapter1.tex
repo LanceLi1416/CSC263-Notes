@@ -170,7 +170,7 @@ For example, consider \textsc{Insert}$(H, 17)$ where $H = [16, 8, 10, 1, 5, 3]$
     child {
         node {$10$}
         child { node {$3$} }
-        child { node [fill=red!50] {$17$} }
+        child { node [fill=MyRed] {$17$} }
     };
 \end{tikzpicture} \end{center} \end{minipage}
 \begin{minipage}[t]{0.3\linewidth} \begin{center} \begin{tikzpicture} [
@@ -187,12 +187,12 @@ For example, consider \textsc{Insert}$(H, 17)$ where $H = [16, 8, 10, 1, 5, 3]$
         child { node {$5$} }
     }
     child { 
-        node [fill=red!50] (17) {$17$}
+        node [fill=MyRed] (17) {$17$}
         child { node {$3$} }
         child { node (10) {$10$} }
     };
 
-    \draw[bend left=60, dashed,latex-latex,color=red!50]  (17) to (10);
+    \draw[bend left=60, dashed,latex-latex,color=MyRed]  (17) to (10);
 \end{tikzpicture} \end{center} \end{minipage}
 \begin{minipage}[t]{0.3\linewidth} \begin{center} \begin{tikzpicture} [
     every node/.style = {circle, fill=Violet, minimum size=2em}, 
@@ -201,7 +201,7 @@ For example, consider \textsc{Insert}$(H, 17)$ where $H = [16, 8, 10, 1, 5, 3]$
     level 3/.style={sibling distance=1.5em},
     baseline=(current bounding box.north)
 ]
-    \node [fill=red!50] (17) {$17$}
+    \node [fill=MyRed] (17) {$17$}
     child {
         node {$8$} 
         child { node {$1$} }
@@ -213,7 +213,7 @@ For example, consider \textsc{Insert}$(H, 17)$ where $H = [16, 8, 10, 1, 5, 3]$
         child { node {$10$} }
     };
 
-    \draw[bend left=60, dashed,latex-latex,color=red!50]  (17) to (16);
+    \draw[bend left=60, dashed,latex-latex,color=MyRed]  (17) to (16);
 \end{tikzpicture} \end{center} \end{minipage}
 
 \begin{algorithm}[H] \begin{algorithmic}
@@ -256,7 +256,7 @@ To find the maximum key in the heap $H$,
         child { node {$10$} }
     };
     
-    \draw[bend left=30, dashed, -latex, color=red!50] (-1.25,0.5) to (-0.25,0.5);
+    \draw[bend left=30, dashed, -latex, color=MyRed] (-1.25,0.5) to (-0.25,0.5);
 \end{tikzpicture} \end{center}
 
 \begin{algorithm}[H] \begin{algorithmic}[1]
@@ -281,7 +281,7 @@ To find the maximum key in the heap $H$,
     level 3/.style={sibling distance=1.5em},
     baseline=(current bounding box.north)
 ]
-    \node[fill=red!50] (root) {$17$}
+    \node[fill=MyRed] (root) {$17$}
     child {
         node {$8$} 
         child { node {$1$} }
@@ -295,8 +295,8 @@ To find the maximum key in the heap $H$,
 
     \node[left of=root, node distance=2cm] (17) {$17$};
     
-    \draw[dashed, -latex, color=red!50] (root) to (17);
-    \draw[bend right=60, dashed, -latex, color=red!50] (10) to (root);
+    \draw[dashed, -latex, color=MyRed] (root) to (17);
+    \draw[bend right=60, dashed, -latex, color=MyRed] (10) to (root);
 \end{tikzpicture} \end{center} \end{minipage}
 \begin{minipage}[t]{0.32\linewidth} \begin{center} \begin{tikzpicture} [
     every node/.style = {circle, fill=Violet, minimum size=2em}, 
@@ -305,7 +305,7 @@ To find the maximum key in the heap $H$,
     level 3/.style={sibling distance=1.5em},
     baseline=(current bounding box.north)
 ]
-    \node[fill=red!50] (root) {$10$}
+    \node[fill=MyRed] (root) {$10$}
     child {
         node {$8$} 
         child { node {$1$} }
@@ -317,7 +317,7 @@ To find the maximum key in the heap $H$,
         child[missing]
     };
     
-    \draw[bend left=60, dashed, latex-latex, color=red!50] (root) to (16);
+    \draw[bend left=60, dashed, latex-latex, color=MyRed] (root) to (16);
 \end{tikzpicture} \end{center} \end{minipage}
 \begin{minipage}[t]{0.32\linewidth} \begin{center} \begin{tikzpicture} [
     every node/.style = {circle, fill=Violet, minimum size=2em}, 
@@ -333,12 +333,12 @@ To find the maximum key in the heap $H$,
         child { node {$5$} }
     }
     child { 
-        node[fill=red!50] (10) {$10$}     
+        node[fill=MyRed] (10) {$10$}     
         child { node {$3$} }
         child[missing]
     };
     
-    \draw[bend left=60, dashed, latex-latex, color=red!50] (root) to (16);
+    \draw[bend left=60, dashed, latex-latex, color=MyRed] (root) to (16);
 \end{tikzpicture} \end{center} \end{minipage}
 
 \begin{algorithm}[H] \begin{algorithmic}[1]
