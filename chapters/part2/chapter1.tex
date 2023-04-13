@@ -1,1 +1,28 @@
-\chapter{Average Case Analysis}
+\chapter{Sorting}
+
+\section{Heap Sort}
+
+\section{Quick Sort}
+
+\begin{algorithm}[H] \begin{algorithmic}[1]
+    \Procedure{QuickSort}{$A$}
+        \If $\textsc{Len}(A) \le 1$ 
+            \State \Return $A$
+        \EndIf
+        \State $L, p, G \gets \textsc{Partition}(A)$
+        \State \Return $\textsc{QuickSort}(L) + [p] + \textsc{QuickSort}(G)$
+    \EndProcedure
+\end{algorithmic} \end{algorithm}
+
+\subsection{Deterministic Quick Sort}
+
+In deterministic quick sort, we choose the pivot to be a certain index in the array. We can choose the pivot to be the first element, the last element, or the middle element. 
+
+\listu {
+    \item Run-time depends on input ordering
+    \item Bad ordering would yield bad run-time, while random ordering would generally yield better run-time
+}
+
+\subsection{Randomized Quick Sort}
+
+In randomized quick sort, we choose the pivot to be a random index in the array. Intuitively, the expected run-time would be the same as deterministic quick sort -- $\Theta(n \lg n)$ -- but the worst case run-time would be much better.

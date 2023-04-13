@@ -1,0 +1,35 @@
+\chapter{Dynamic Array}
+
+C styled arrays are static, meaning that they have a fixed size. In this chapter, we will learn how to implement a dynamic array, which is a data structure that can grow and shrink in size.
+
+\begin{verbatim}
+class DynamicArray {
+    capacity: integer  # room for elements
+    size:     integer  # actual number of elements
+};
+\end{verbatim}
+
+\begin{minipage}[t]{0.4\linewidth} \begin{algorithm}[H] \begin{algorithmic}[1]
+    \label{algo:da_insert}
+    \Procedure{Insert}{$A, x$}
+        \If{$A.size = A.capacity$}
+            \State $A \gets \textsc{Resize}(A)$
+        \EndIf
+        \State $A.size \gets A.size + 1$
+        \State $A[A.size] \gets x$
+    \EndProcedure
+\end{algorithmic} \end{algorithm} \end{minipage}
+\hfill
+\begin{minipage}[t]{0.5\linewidth} \begin{algorithm}[H] \begin{algorithmic}[1]
+    \Procedure{Resize}{$A$}
+        \State $B \gets \textsc{DynamicArray}(2 \times A.capacity)$
+        \For {$i = 1$ \textbf{to} $A.size$}
+            \State \textsc{Insert}($B, A[i]$)
+        \EndFor
+        \State \Return $B$
+    \EndProcedure
+\end{algorithmic} \end{algorithm} \end{minipage}
+
+{~~~}
+
+To analyze the running time of the above algorithm, see \hyperref[exam:amortized_accounting]{this example} using accounting method for amortized analysis. The amortized running time of the above algorithm is $\Theta(1)$.

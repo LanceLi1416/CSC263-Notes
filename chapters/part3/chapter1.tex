@@ -1,0 +1,108 @@
+\chapter{Average Case Analysis}
+
+In \term{average case analysis}\index{Average Case Analysis}, we are interested in the average performance of an algorithm. we take the average, or the expected value, over the distribution of the possible inputs. 
+
+For each $n$, define $S_n = \{ \text{all inputs of size } n \}$, and if we consider the inputs to be random, then $S_n$ is the sample space. For each $x \in S_n$, define $P(x)$ to be the probability that $x$ will be chosen as the input. Define $t(x)$ as the number of steps preformed on input $x$. $t$ is the random variable. 
+
+Then, the average case running time is defined as $$\begin{aligned}[t]
+    T(n) & = E[t]                           \\
+         & =\sum_{x \in S_n} P(x) \cdot t(x)
+\end{aligned}$$
+
+\example {
+    Consider the linear search algorithm on a linked list $L$. 
+
+    \begin{algorithm}[H] \begin{algorithmic}[1]
+        \Procedure{LinSearch}{$L$, $x$}
+            \State $z \gets L.\textit{head}$
+            \While{$z \neq \text{NIL}$ \textbf{and} $z.\textit{data} != x$}
+                \State $z \gets z.\textit{next}$
+            \EndWhile
+            \State \Return $z$
+        \EndProcedure
+    \end{algorithmic} \end{algorithm}
+
+    Let $S_n$ be the sample space of all linked lists of size $n$. Let $P(x)$ be the probability that $x$ is chosen as the input. Let $t(x)$ be the number of steps performed on input $x$.
+
+    \listu {
+        \item We need to know $S_n$ with probability
+
+        Consider the inputs $\texttt{input}_1 = ([1, 2, 3], 2)$ and $\texttt{input}_2 = ([``a", ``b", ``c"], ``b")$, note that they will take the same steps. We only need one input for each possible value of $t$.
+
+        Define $S_n = \{ ([1, 2, \dots, n], 1), ([1, 2, \dots, n], 2), \dots, ([1, 2, \dots, n], n), ([1, 2, \dots, n], 0) \}$. 
+
+        \item We assume all the inputs happen equally likely, then $P(x) = \frac{1}{n+1}$.
+        
+        \item  We need an exact formula for $t(x)$.
+        
+        In practice, we choose some ``key operations'' s.t. counting \bred{only} these operations is within a constant factor of total time -- then set $t(x) = \text{number of key operations}$. 
+
+        Here, we choose line 3, $z.\textit{data} \neq x$, as the key operation.
+    }
+
+    Then, we have $\begin{aligned}[t]
+        T(n) & = \sum_{(L, i) \in S_n} t(L, i) \cdot P(L, i)                            \\
+             & = \frac{1}{n + 1} \sum_{i = 0}^n t([1, 2, \dots, n], i)                  \\
+             & = \frac{1}{n + 1} \left( t([1, 2, \dots, n], 0) + \sum_{i=1}^n i \right) \\
+             & = \frac{1}{n + 1} \left(n + \frac{n(n + 1)}{2} \right)                   \\
+             & = \frac{n}{n + 1} + \frac{n}{2} 
+    \end{aligned}$
+}
+
+\example { \allowdisplaybreaks
+    Consider $\textsc{Search}(T, k)$ on a hash table $T$ for a key $k$. 
+
+    Assume $t$ has $m$ slots, and uses chaining to resolve collisions. Assume that prior to applying the textsc{Search} algorithm, the hash table contains $n$ keys. 
+
+    Assume the key $k$ is samples uniformly at random from $U$. 
+
+    Let $N(k)$ be the number of keys examined during search for $k$. $N(k)$ is the key operation. 
+
+    \begin{align*}
+        E[N(k)]                    & = \sum_{k \in U} P[k] \cdot N(k)                     \\
+                                   & = \sum_{i=0}^{m-1} \sum_{\substack{k \in U           \\
+        h(k) = i}} P[k] \cdot N(k) & \text{regroup terms}                                 \\
+                                   & \le \sum_{i=0}^{m-1} \sum_{\substack{k \in U         \\
+        h(k) = i}} P[k] \cdot L_i  & \text{since } N(k) \le L_i \text{ when } h(k) = i    \\
+                                   & = \sum_{i=0}^{m-1} L_i \cdot \sum_{\substack{k \in U \\
+        h(k) = i}} P[k]                                                                   \\
+                                   & = \sum_{i=0}^{m-1} L_i \cdot P[h(k) = i]             \\
+                                   & = \sum_{i=0}^{m-1} L_i \cdot \frac{1}{m}             \\
+                                   & = \frac{1}{m} \sum_{i=0}^{m-1} L_i                   \\
+                                   & = \frac{n}{m}
+    \end{align*}
+}
+
+\example {
+    Consider \textsc{QuickSort} on an array $A$ of size $n$.
+
+    Let $S_n = \{ \text{all permutations of } [1, 2, dots, n] \}$
+
+    We assume an uniform distribution of the inputs, then $P(x) = \frac{1}{n!}$.
+
+    Let the random variable $T(A)$ be the total number of comparisons between elements of $A$.
+
+    Define $X_{i, j} = \begin{cases}
+        1 & \text{if } i \text{ is compared to } j \\
+        0 & \text{otherwise}
+    \end{cases}$ for $1 \le i < j \le n$.
+
+    Then, $\displaystyle T(A) = \sum_{i=1}^{n-1} \sum_{j=i+1}^n X_{i, j}$.
+
+    The probability $\begin{aligned}[t]
+        P(X_{i,j} = 1) & = P(i \text{ or } j \text{ appear in } A \text{ before all other values in range } [i...j]) \\
+                       & =\frac{1}{j - i + 1} + \frac{1}{j - i + 1}                                                  \\
+                       & = \frac{2}{j - i + 1}
+    \end{aligned}$
+
+    Then, $\begin{aligned}[t]
+        E[T(A)] & = \sum_{i=1}^{n-1} \sum_{j=i+1}^n E[X_{i,j}]           \\
+                & = \sum_{i=1}^{n-1} \sum_{j=i+1}^n P(X_{i,j} = 1)       \\
+                & = \sum_{i=1}^{n-1} \sum_{j=i+1}^n \frac{2}{j - i + 1}  \\
+                & = \sum_{i=1}^{n-1} \sum_{j=i+1}^n \frac{2}{\alpha + 1}
+                & \text{substitute } j - i \text{ with } \alpha          \\
+                & < \sum_{i=1}^{n-1} \sum_{j=i+1}^n \frac{2}{k}          \\
+                & = \sum_{i=1}^{n-1} \Theta(\lg n)                       \\
+                & = \Theta(n \lg n)
+    \end{aligned}$
+}

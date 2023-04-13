@@ -1,0 +1,112 @@
+\chapter{Amortized Analysis}\index{Amortized Analysis}
+
+In amortized analysis, we analyze the cost of a sequence of operations, not just a single operation. The amortized cost of a sequence of operations is the average cost per operation. 
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \fill[MyBlue] (0em,0em) rectangle ++(0.9em,0.9em);
+        \fill[MyRed]  (1em,0em) rectangle ++(0.9em,2em  );
+        \fill[MyBlue] (2em,0em) rectangle ++(0.9em,0.9em);
+        \fill[MyBlue] (3em,0em) rectangle ++(0.9em,0.9em);
+        \fill[MyRed]  (4em,0em) rectangle ++(0.9em,4em  );
+        \fill[MyBlue] (5em,0em) rectangle ++(0.9em,0.9em);
+        \fill[MyBlue] (6em,0em) rectangle ++(0.9em,0.9em);
+        \fill[MyBlue] (7em,0em) rectangle ++(0.9em,0.9em);
+        \fill[MyBlue] (8em,0em) rectangle ++(0.9em,0.9em);
+        \fill[MyRed]  (9em,0em) rectangle ++(0.9em,8em );
+        \fill (10.25em,0.5em) circle (0.125em);
+        \fill (10.625em,  0.5em) circle (0.125em);
+        \fill (11em,0.5em) circle (0.125em);
+        %
+        \node at (1em,6.5em) {infrequent, \textbf{\color{MyRed}expensive} operations};
+        \node at (4.5em,-3em) {frequent, \textbf{\color{MyBlue}cheap} operations};
+        \draw[MyRed,-latex] (0.5em,5.5em)  -- (1.5em,2.5em);
+        \draw[MyRed,-latex] (1.25em,5.5em) -- (4.5em,4.5em);
+        \draw[MyRed,-latex] (2em,7.5em)    -- (8.5em,8em);
+        \draw[MyBlue,-latex] (2em,-2.25em) -- (0.5em,-0.5em);
+        \draw[MyBlue,-latex] (2.75em,-2.25em) -- (2.5em,-0.5em);
+        \draw[MyBlue,-latex] (3.5em,-2.25em) -- (3.5em,-0.5em);
+        \draw[MyBlue,-latex] (4.25em,-2.25em) -- (5.5em,-0.5em);
+        \draw[MyBlue,-latex] (4.5em,-2.25em) -- (6.5em,-0.5em);
+        \draw[MyBlue,-latex] (5em,-2.25em) -- (7.5em,-0.5em);
+        \draw[MyBlue,-latex] (5.75em,-2.25em) -- (8.5em,-0.5em);
+
+        \fill[Violet] (12em,3em) rectangle ++(4.1em,1em);
+        \fill[Violet] (16em,4.5em) -- (17em,3.5em) -- (16em,2.5em) -- cycle;
+
+        \fill [MyOrange] (19em,0em) rectangle ++(0.9em,2.1em);
+        \fill [MyOrange] (20em,0em) rectangle ++(0.9em,2.1em);
+        \fill [MyOrange] (21em,0em) rectangle ++(0.9em,2.1em);
+        \fill [MyOrange] (22em,0em) rectangle ++(0.9em,2.1em);
+        \fill [MyOrange] (23em,0em) rectangle ++(0.9em,2.1em);
+        \fill [MyOrange] (24em,0em) rectangle ++(0.9em,2.1em);
+        \fill [MyOrange] (25em,0em) rectangle ++(0.9em,2.1em);
+        \fill [MyOrange] (26em,0em) rectangle ++(0.9em,2.1em);
+        \fill [MyOrange] (27em,0em) rectangle ++(0.9em,2.1em);
+        \fill [MyOrange] (28em,0em) rectangle ++(0.9em,2.1em);
+        %
+        \draw[pen colour={MyOrange},, decorate, decoration = {calligraphic brace, amplitude = 1em}] (19em,2.7em) -- (29em,2.7em);
+        \node[text width=11em] at (24em,6em) {``spread'' the expensive computations over the entire sequence};
+    \end{tikzpicture}
+\end{figure}
+
+\listu {
+    \item The \term{worst-case sequence complexicy}\index{Amortized Analysis!Worst-Case Sequence Complexity} of a sequence $S$ of $k$ operations is the maximum possible total steps performed by $S$ (taken over all possible inputs to the operations in $S$).
+
+    \item The worst-case sequence complexity is \bred{at most} $k \times \null$the worst-case complexity of any individual operation in $S$.
+
+    \item Suppose that the worst-case sequence complexity of a sequence of $k$ operations is $T(k)$. Then the (worst-case) \term{amortized complexity}\index{Amortized Analysis!Amortized Complexity} per operation of this sequence is $\frac{T(k)}{k}$.
+
+    \item With amortized analysis, we take the average of the costs of multiple opertions (as opposed to average-case analysis, where we calculate the cost of a single operation by averaging over the input distribution)
+}
+
+\section{Aggregated Method}
+
+In the \term{aggregated method}\index{Amortized Analysis!Aggregated Method}, we determine the upper bound $T(n)$ on the total cost of a sequence of $N$ operations, then calculate the average cost per operation as $\frac{T(n)}{n}$. 
+
+\example {
+    Consider when we insert into an array. We increase the size of the array by 4 when it is $\frac{3}{4}$ full. 
+
+    For simplicity, suppose that each insert with no resizing requires $c$ steps, for some constant $c \in \mathbb{N}^+$ (so each insert with resizing requires $c \cdot n  + c$ steps, where $n$ is the number of items in the array prior to resizing).
+
+    \begin{center} \begin{tabular}{c c}
+        \centering
+            Operation Number & Cost     \\
+            \hline
+            1                & $c$      \\
+            2                & $c$      \\
+            3                & $c$      \\
+            4                & $4c$     \\
+            5                & $c$      \\
+            6                & $c$      \\
+            7                & $c$      \\
+            8                & $7c$     \\
+            9                & $c$      \\
+            10               & $10c$    \\
+            $\vdots$         & $\vdots$
+    \end{tabular} \end{center}
+
+    Within a sequence of $k$ insertions, we need to resize $\floor{\frac{k - 1}{3}}$ times. For all $k$ insert operations, the total cost is $$T(k) = c \cdot \sum_{i=1}^{\floor{\frac{k-1}{3}}} (3i + 1) + c \cdot \left( k - \floor{\frac{k-1}{3}} \right)$$
+
+    Note that $\begin{aligned}[t]
+        c \cdot \sum_{i=1}^{\floor{\frac{k-1}{3}}} (3i + 1)
+         & = c \cdot \sum_{i=1}^{\floor{\frac{k-1}{3}}} 3i + \sum_{i=1}^{\floor{\frac{k-1}{3}}} 1                                    \\
+         & = 3c \cdot \sum_{i=1}^{\floor{\frac{k-1}{3}}} i + c \cdot \floor{\frac{k-1}{3}}                                           \\
+         & = \frac{3}{2}c \cdot \floor{\frac{k-1}{3}} \cdot \left( \floor{\frac{k-1}{3}} + 1 \right) + c \cdot \floor{\frac{k-1}{3}}
+           \in \Theta(k^2)
+    \end{aligned}$
+     
+    Thus, $T(k)$ is $\Theta(k^2)$. The amortized cost per operation is $\frac{T(k)}{k} = \Theta(k)$.
+}
+
+\section{Accounting Method}
+
+The \term{accounting method}\index{Amortized Analysis!Accounting Method} is a form of aggregate analysis which assigns to each operation an amortized cost which may differ from its actual cost. Early operations have an amortized cost higher than their actual cost, which accumulates a saved ``credit'' that pays for later operations having an amortized cost lower than their actual cost. Because the credit begins at zero, the actual cost of a sequence of operations equals the amortized cost minus the accumulated credit. Because the credit is required to be non-negative, the amortized cost is an upper bound on the actual cost. Usually, many short-running operations accumulate such credit in small increments, while rare long-running operations decrease it drastically.
+
+\example {
+    \label{exam:amortized_accounting}
+    Consider \hyperref[algo:da_insert]{\textsc{Insert}} for dynamic array.
+
+
+}

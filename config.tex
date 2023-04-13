@@ -15,6 +15,12 @@
 % \setlength{\parskip}{5pt}
 
 %-----------------
+%   Shortcuts
+%-----------------
+\newcommand{\cmt}[1]{{\color{DarkGreen}{\texttt{\#} #1}}}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+
+%-----------------
 %   Colours
 %-----------------
 \definecolor{thmbg}{HTML}{F2F2F9}
@@ -28,6 +34,9 @@
 \definecolor{greybg}{RGB}{249, 249, 249}
 % \definecolor{greybg}{RGB}{249, 249, 249}
 \definecolor{MyGrey}{HTML}{5B5B5B}
+\definecolor{MyBlue}{RGB}{94,143,233}
+\definecolor{MyRed}{RGB}{223,125,103}
+\definecolor{MyOrange}{RGB}{241,154,60}
 
 \definecolor{LightBlue}{rgb}{0.0, 0.64, 1.0}
 \definecolor{LightRed}{rgb}{1.0, 0.50, 0.50}
@@ -132,6 +141,7 @@
 %   Lists
 %---------------
 \usepackage{tikz}
+\usetikzlibrary{decorations.pathreplacing,calligraphy}
 
 \usepackage{enumitem}
 
