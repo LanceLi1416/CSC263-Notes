@@ -250,9 +250,32 @@ Now, we can prove the theorem.
     Consider the colour of $v$ when we first dequeue $u$ from $Q$.
 
     \begin{itemize}
-        \item 
+        \item If $v$ is painted \textbf{white}, then we set $d[v] = d[u] + 1$, which is a contradiction.
+        \item If $v$ is painted \textbf{black}, then $v$ was in the queue before $u$. By Lemma 4.1.3, we have $d[v] \le d[u]$, which is a contradiction.
+        \item If $v$ is painted \textbf{grey}, then $v$ was discovered while visiting some vertex $w$ that was dequeued earlier than $u$. Hence, $d [v] = d[w] + 1$, and by Lemma 4.1.3 we have $d[w] \le d[u]$. So $d[v] \le d[u] + 1$, which is a contradiction.
     \end{itemize}
 \end{proof}
+
+\subsubsection{Time complexity of BFS}
+
+\listu {
+    \item Initialization (painting vertices white, setting entries of $d$ to $\infty$ and entries of $\pi$ to NIL) takes $\Theta(|V|)$ time. 
+    \item After initialization, we never paint a vertex white.
+    \item Thus, each vertex is enqueued/dequeued at most once. 
+    \item Hence, we spend $\mathcal{O}(|V|)$ time doing queue operations. 
+    \item Every time we dequeue a vertex, we scan its out-neighbourhood to discover its neighbours:
+    \listu {
+        \item With an \textbf{adjacency list}, we consider each edge at most once (or at most twice in an undirected graph), so in total we need at most $\mathcal{O}(|E|)$ time to consider all of the edges.
+        \item With an adjacency matrix, we scan each row of the matrix at most once, so in total we need at most $\mathcal{O}(|V|^2)$ time to consider all of the edges.
+    }
+}
+
+\begin{minipage}[t]{0.45\linewidth} \begin{center}
+    Using adjacency list: $\mathcal{O}(|V| + |E|)$
+\end{center} \end{minipage}
+\begin{minipage}[t]{0.45\linewidth} \begin{center}
+    Using adjacency matrix: $\mathcal{O}(|V|^2)$
+\end{center} \end{minipage}
 
 \section{Minimum Spanning Trees}
 
