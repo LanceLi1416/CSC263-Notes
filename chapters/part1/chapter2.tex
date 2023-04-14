@@ -1,4 +1,4 @@
-\chapter{Dictionary}
+\chapter{Dictionaries}
 
 \begin{minipage}[t]{0.45\linewidth}
     \textbf{Data}
@@ -46,7 +46,7 @@ $^*$: these require the keys to be ordered
 
 $^\#$: here we are only doing deletion (without having to search for $x$)
 
-\section{Binary Search Tree}\index{Binary Search Tree}
+\section{Binary Search Trees}\index{Binary Search Tree}
 
 A binary search tree is a binary tree with the \term{binary-search-tree property}\index{Binary Search Tree!Binary-Search-Tree Property}:
 
@@ -223,7 +223,7 @@ class Dictionary:
     \EndProcedure
 \end{algorithmic} \end{algorithm}
 
-\section{Balanced Search tree}
+\section{Balanced Search trees}
 
 Despite the simplicity of the BST, it is not a very efficient data structure. The worst-case running time of the BST operations is proportional to the height of the tree, which is $\Theta(n)$, where $n$ is the number of elements in the tree. The shape of a BST is determined by the order in which keys are inserted. If the keys are inserted in sorted order, the BST degenerates into a linked list. 
 
@@ -594,11 +594,11 @@ To restore balance, we need to perform a \term{rotation}\index{AVL Tree!Rotation
 
 A hash table is an effective data structure for implementing dictionaries. Although \textsc{Search} for an element in a hes table can take as long as searching for an element in a linked list -- $\Theta(n)$ time in the worst case -- in practice, hashing preforms extremely well. Under reasonable assumptions, the average time to search for an element in a hash table is $\mathcal{O}(1)$. 
 
-\subsection{Direct Access Table}
+\subsection{Direct Access Tables}
 
 Direct addressing is a simple technique that works well when the universe $U$ of keys is reasonably small. If $U$ is small, then we can use an array $T$ of size $|U|$ to implement a dictionary, called a \term{direct access table}\index{Hash Table!Direct Access Table}. The key $k$ is used as an index into $T$ to access the item with key $k$.
 
-\subsection{Hash Table}
+\subsection{Hash Tables}
 
 The downside of direct addressing is apparent: if the universe $U$ is large or infinite. storing a table $T$ of size $|U|$ is impractical, and the set $K$ of keys \itblue{actually stored} may be so small relative to $Y$ that most of the space allocated for $T$ would be wasted. Instead, we use a hash table. 
 
@@ -628,7 +628,7 @@ In open addressing, if $T[h(k)]$ is occupied, then we search for the next availa
     $h(k, i) = (h_i(k) + i \cdot (h_2(k))) \mod m$, where $h_2(k)$ is a secondary hash function. 
 }
 
-\subsection{Close Addressing / Chaining}
+\subsubsection{Close Addressing / Chaining}
 
 In close addressing, we use a linked list to store the items in each bucket. Each nonempty slot points to a linked list, and all the elements that hash to the same slot go into that slot's linked list. 
 
