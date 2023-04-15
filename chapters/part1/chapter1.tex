@@ -392,23 +392,3 @@ To find the maximum key in the heap $H$,
         \EndFor
     \EndProcedure
 \end{algorithmic} \end{algorithm}
-
-\section{Applications}
-
-\subsection{Heap Sort}
-
-\begin{minipage}[t]{0.45\linewidth}
-    Implementation 1:
-
-    \listu {
-        \item Run \textsc{Build-Max-Heap}$(A)$
-        \item Run \textsc{Extract-Max}$(A)$ for $n - 1$ times
-    }
-\end{minipage}
-\begin{minipage}[t]{0.45\linewidth}
-    Implementation 2:
-
-    \listu {
-        \item We modify the \textsc{Extract-Max} algorithm to swap the root with the last item
-    }
-\end{minipage}

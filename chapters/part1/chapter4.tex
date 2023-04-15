@@ -277,6 +277,173 @@ Now, we can prove the theorem.
     Using adjacency matrix: $\mathcal{O}(|V|^2)$
 \end{center} \end{minipage}
 
+\subsection{Depth-First Search}
+
+\listu {
+    \item In DFS, we walk through the graph as far as possible until we hit a dead end -- when this happens, we backtrack to an undiscovered vertex. 
+    \item Similar to BFS, we paint vertices as we go: 
+    \listu {
+        \item Painted white: undiscovered
+        \item Painted grey: discovered but not yet visited 
+        \item Painted black: visited
+    }
+    \item Instead of storing distances/depths, we store timestamps: 
+    \item \listu {
+        \item $\textit{disc}[v] = \null$time at which $v$ is first discovered
+        \item $\textit{vis}[v] = \null$time at which we finish visiting $v$
+    }
+}
+
+\listu {
+    \item One approach is to simply replace the \itblue{queue} from the BFS algorithm with a \itblue{stack}. This gives us an \bred{iterative} DFS algorithm. 
+    \item However, it is more natural to write DFS as a recursive algorithm.
+}
+
+\begin{minipage}[t]{0.45\linewidth} \begin{algorithm}[H] \begin{algorithmic}[1]
+    \Procedure{DFS}{G}
+        \State \cmt{Initialization}
+        \For {each $v \in G.V$}
+            \State $d[v] \gets f[v] \gets \infty$
+            \State $\pi[v] \gets \text{NIL}$
+        \EndFor
+        \State $\text{time} \gets 0$  \cmt{global}
+        \State \cmt{Main loop}
+        \For {each $v \in G.V$}
+            \If {$d[v] = \infty$} 
+                \State \cmt{colour[$v$] = white}
+                \State \Call{DFS-Visit}{$G$, $v$}
+            \EndIf
+        \EndFor
+    \EndProcedure
+\end{algorithmic} \end{algorithm} \end{minipage}
+\hfill
+\begin{minipage}[t]{0.45\linewidth} \begin{algorithm}[H] \begin{algorithmic}[1]
+    \Procedure{DFS-Visit}{$G$, $v$}
+        \State \cmt{Discovered (colour[v] = grey)}
+        \State $d[v] \gets \text{time} \gets \text{time} + 1$
+        \State \cmt{Do something with $v$, if desired}
+        \State \cmt{Explore $v$'s adjacency list}
+        \For {each $u \in G.adj[v]$}
+            \If {$d[u] = \infty$} 
+                \State \cmt{colour[$u$] = white}
+                \State $\pi[u] = v$
+                \State \Call{DFS-Visit}{$G$, $u$}
+            \EndIf
+        \EndFor
+        \State \cmt{Finished (colour[$v$] = black)}
+        \State $f[v] \gets \text{time} \gets \text{time} + 1$
+    \EndProcedure
+\end{algorithmic} \end{algorithm} \end{minipage}
+
+\subsubsection{DFS Forests}
+
+We classify each edge $(u, v)$ based on the colour of $v$ when we consider this edge:
+
+\listu {
+    \item \term{Tree edges} are the edges $u$, $v \in E$ that form the DFS forest stored by $\pi$ 
+    
+    The vertex $v$ is painted \bred{white} when $(u, v)$ is considered 
+
+    \item \term{Back edges}\index{DFS Tree!Back Edge} are the edges $(u, v) \in E$ such that $v$ is an ancestor of $u$ in the DFS forest 
+    
+    The vertex $v$ is painted \bred{grey} when $(u, v)$ is considered
+
+    \item \term{Forward edges}\index{DFS Tree!Forward Edge} are the edges $(u, v) \in E$ such that $v$ is a descendant of $u$ in the DFS forest 
+    
+    The vertex $v$ is painted \bred{black} when $(u, v)$ is considered
+
+    \item \term{Cross edges}\index{DFS Tree!Cross Edge} are all other edges $(u, v) \in E$ that are not part of the DFS forest (i.e. $v$ is neither an ancestor nor a descendant of $u$)
+
+    The vertex $v$ is painted \bred{black} when $(u, v)$ is considered
+}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/DFS-Tree_Edges.png}
+\end{figure}
+
+Note that for undirected graphs, there are NO forward edges and NO cross edges.
+
+\subsubsection{Time Complexity}
+
+The run-time of DFS is similar to BFS.
+
+\begin{minipage}[t]{0.45\linewidth} \begin{center}
+    Using adjacency list: $\mathcal{O}(|V| + |E|)$
+\end{center} \end{minipage}
+\begin{minipage}[t]{0.45\linewidth} \begin{center}
+    Using adjacency matrix: $\mathcal{O}(|V|^2)$
+\end{center} \end{minipage}
+
+\subsubsection{Parenthesis theorem}\index{Parenthesis Theorem}
+
+\theorem {
+    After performing \textsc{DFS}$(G = (V, E))$, for any two vertices $u$, $v \in V$, exactly one of the following statements holds:
+    \listo {
+        \item The intervals $\left[ \textit{disc}[u], \textit{vis}[u] \right]$ and $\left[ \textit{disc}[v], \textit{vis}[v] \right]$ are disjoint, and neither $u$ nor $v$ is a descendant of the other in the DFS forest.
+        \item The interval $\left[ \textit{disc}[u] , \textit{vis}[u] \right]$ is contained entirely in the interval $\left[ \textit{disc}[v], \textit{vis}[v] \right]$, and $u$ is a descendant of $v$ in the DFS forest.
+        \item The interval $\left[ \textit{disc}[v], \textit{vis}[v] \right]$ is contained entirely in the interval $\left[ \textit{disc}[u], \textit{vis}[u] \right]$, and $v$ is a descendant of $u$ in the DFS forest.
+    }
+}
+
+\begin{proof}
+    (sketch)
+
+    Suppose that $\textit{disc}[u] < \textit{disc}[v]$.
+
+    \listu {
+        \item Case 1: $\textit{disc}[v] < \textit{vis}[u]$
+
+        \begin{center} 
+            \includegraphics*[width=0.2\linewidth]{images/Parenthesis-Thm-Grey-u.png}
+
+            $v$ is first discovered while $u$ is painted grey.  
+        \end{center}
+
+        So $v$ is a descendant of $u$.
+
+        We don't backtrack to $u$ until we have finished visiting $v$.
+
+        Therefore, we paint $v$ black and set $\textit{vis}[v]$ before backtracking to $u$. Hence, $\textit{vis}[v] < \textit{vis}[u]$.
+
+        \item Case 2: $\textit{vis}[u] < \textit{disc}[v]$
+
+        \begin{center} \includegraphics*[width=0.2\linewidth]{images/Parenthesis-Thm-Black-u.png}
+
+            $v$ is first discovered while $u$ is painted black.  
+        \end{center}
+
+        So $v$ is not a descendant of $u$.
+
+       Since $\textit{disc}[u] < \textit{dics}[v]$, $u$ is not a descendant of $v$.
+
+       Since $\textit{disc}[u] < \textit{vis}[u]$ and $\textit{disc}[v] < \textit{vis}[v]$, we have $\textit{disc}[u] < \textit{vis}[u] < \textit{disc}[v] < \textit{vis}[v]$.
+    }
+
+    When $\textit{disc}[v] < \textit{disc}[u]$, proof is symmetric.
+\end{proof}
+
+\subsection{Strongly connected}
+
+Recall that an undirected graph is connected if and only if there is a path of edges between any pair of vertices in $V$. What about directed graphs? A directed graph $G = (V, E)$ is strongly connected if and only if, for all $u$, $v \in V$, there is a path of edges from $u$ to $v$ in $G$. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.2\linewidth]{images/Strongly-Connected.png}
+    \qquad
+    \includegraphics[width=0.2\linewidth]{images/Not-Strongly-Connected.png}
+    \caption*{A strongly connected graph (left) and a non-strongly connected graph (right, where $v$ is not reachable from $u$)}
+\end{figure}
+
+\listu {
+    \item Run \textsc{DFS} on the \bred{transpose} of $G$ (reverse edge direction of all edges in $G$)
+    \item \itblue{Reorder} vertices in decreasing order of finish time (in $G.V$ and within each adjacency list)
+
+    Run \textit{DFS} on $G$ using the new ordering of vertices
+
+    \item Each DFS tree is one strongly connected component
+}
+
 \section{Minimum Spanning Trees}
 
 \section{Disjoint Sets}

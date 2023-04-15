@@ -608,7 +608,7 @@ However, when $m << |U|$, collisions are unavoidable. A \term{collision}\index{H
 
 \subsubsection{Open Addressing}
 
-In open addressing, if $T[h(k)]$ is occupied, then we search for the next available location in $T$ to store the item with key $k$. We call the original hash function $h_1$ the \term{primary hash function}\index{Hash Table!primary hash function}, such that $h_1(k)$ is the home bucket of $k$. We use the \term{probe sequence}\index{Hash Table!Probe Seuqnece} $h(k, i)$ to determine the bucket to try after $i$ collisions. 
+In open addressing, if $T[h(k)]$ is occupied, then we search for the next available location in $T$ to store the item with key $k$. We call the original hash function $h_1$ the \term{primary hash function}\index{Hash Table!primary hash function}, such that $h_1(k)$ is the home bucket of $k$. We use the \term{probe sequence}\index{Hash Table!Probe Sequence} $h(k, i)$ to determine the bucket to try after $i$ collisions. 
 
 \listu {
     \item \term{Linear Probing}\index{Hash Table!open addressing!linear probing}
