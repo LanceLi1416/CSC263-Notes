@@ -446,4 +446,125 @@ Recall that an undirected graph is connected if and only if there is a path of e
 
 \section{Minimum Spanning Trees}
 
-\section{Disjoint Sets}
+In a \term{weighted graph}\index{Graph!Weighted Graph} $G = (V, E)$, each edge $e \in E$ has a weight $w(e)$
+
+\begin{center} \includegraphics[width=0.5\linewidth]{images/Weighted-Graph.png} \end{center}
+
+A \term{minimum spanning tree}\index{Minimum Spanning Tree} (MST) $T$ of a weighted, undirected, connected graph $G = (v, E)$ is an acyclic subset of $E$ that connects all of the vertices in $V$ and whose total weight $\displaystyle \sum_{\{u,v\} \in T} w(\{ u, v \} )$ is minimized.
+
+\begin{center} \includegraphics[width=0.5\linewidth]{images/Minimum-Spanning-Tree.png} \end{center}
+
+Above, we define an MST as a set of edges. We also often call the graph $M = (V, T)$ an MST of $G$.
+
+The graph $M = (V, T)$ belongs to a special class of graphs called \bred{trees}, which can be defined in many ways.
+
+\subsection{Prim's Algorithm}\index{Prim's Algorithm}
+
+In Prim's Algorithm, we start with an empty tree $T$, add edges one at a time to $T$ until we have an MST. At each step, pick the \bred{smallest} edge that connects some vertex in $T$ to a vertex outside $T$. 
+
+\begin{center} \includegraphics[width=0.5\linewidth]{images/Prims-Algorithm.png} \end{center}
+
+\begin{algorithm}[H] \begin{algorithmic}
+    \Procedure{Prim}{$G$, $w: E \to \mathbb{R}$, $r \in G.V$}
+        \State \cmt{Initialization}
+        \State $T = \varnothing$
+        \State $Q = \textsc{Make-Queue}(G.V)$
+
+        \State \cmt{Place all vertices in the queue}
+        \For {$v \in G.V$}
+            \State $pri[v] = \infty$
+            \State $\pi[v] = \text{NIL}$
+            \State $Q.\textsc{Insert}(v)$
+        \EndFor
+
+        \State \cmt{Now, set $r$ as the root}
+        \State $pri[r] = 0$
+        \State $Q.\textsc{Decrease-Key}(r)$
+
+        \State \cmt{Main loop}
+        \While {not $Q.\textsc{Empty}()$}
+            \State \cmt{Connect a vertex with minimum priority (edge weight)}
+            \State $u = Q.\textsc{Extract-Min}()$
+            \If {$\pi[u] \neq \textit{NIL}$}
+                $T = T \cup \{ \pi[u], u \}$
+            \EndIf
+
+            \State \cmt{Update priorities of neighbors of $u$}
+            \For {$v \in G.Adj[u]$}
+                \If {$v \in Q$ and $w(u, v) < pri[v]$}
+                    \State $\pi[v] = u$
+                    \State $pri[v] = w(u, v)$
+                    \State $Q.\textsc{Decrease-Key}(v)$
+                \EndIf
+            \EndFor
+        \EndWhile
+        \State \Return $T$
+    \EndProcedure
+\end{algorithmic} \end{algorithm}
+
+Runtime
+
+\listu {
+    \item Initialization: $\Theta(n)$
+    
+    \item Main loop: $n$ iterations; one \textsc{Extract-Min} each time 
+    
+    $\Theta(n \lg n)$
+
+    \item Inner loop: examine each edge twice; at most \textsc{Decrease-Key} per edge
+    
+    $\Theta(m \lg n)$
+
+    \item Overall: $\Theta((m + n) \lg n)$
+}
+
+Note that to make \textsc{Decrease-Key} efficient, we need to track \textit{index}[$v$] -- the position of $v$ in the min-heap -- and update the index values during each swap. 
+
+\subsection{Kruskal's algorithm}
+
+In Kruskal's algorithm, we repeatedly pick the \bred{cheapest edge} of the graph $G$ that \bred{does not create a cycle} in the current set of edges.
+
+\begin{center} \includegraphics[width=0.5\linewidth]{images/Kruskals-Algorithm.png} \end{center}
+
+\begin{algorithm}[H] \begin{algorithmic}[1]
+    \Procedure{Kruskal}{$G$, $w$}
+        \State \cmt{Sort edges: $w(e_1) \le w(e_2) \le \cdots \le w(e_m)$}
+        \State $T = \varnothing$
+        \For {each $e_i = e_1, e_2, \ldots, e_m$}
+            \State let $(u_i, v_i) = e_i$
+            \If {$u_i$, $v_i$ are not already connected by an edge in $T$}
+                \State $T = T \cup \{ e_i \}$
+            \EndIf
+        \EndFor
+        \State \Return $T$
+    \EndProcedure
+\end{algorithmic} \end{algorithm}
+
+To determine if $u_i, v_i$ are already connected, we can use BFS / DFS, which takes $\Theta(n)$ time \footnote{BFS / DFS takes $\Theta(m + n)$ time. Since $m \le n - 1$, this step takes $\Theta(n)$ time.}. The overall run-time would be $\Theta(m \cdot n)$. To make this algorithm more efficient, we can use disjoint sets.
+
+\section{Disjoint Sets}\index{Disjoint Sets}
+
+\begin{minipage}[t]{0.4\linewidth}
+    \textbf{Data}
+
+    \listu {
+        \item A collection $\{S, \dots, S \}$ of disjoint, dynamic sets where $S_i \neq \varnothing$
+
+        Each set in this collection contains a single \term{representative}
+    }
+\end{minipage}
+\begin{minipage}[t]{0.5\linewidth}
+    \textbf{Operations}
+
+    \listu {
+        \item \textsc{Make-Set}$(x)$
+        
+        Precondition: $x \in U$, $x \notin S_1, \dots, x \notin S_n$
+        
+        Create a new set $S_x = \{ x \}$, add $S_x$ to the collection
+
+        \item \textsc{Find-Set}$(x)$
+        
+        Return the representative element for set $S$ s.t. $x \in S$, or NIL if $x$ no such $S$ exists
+    }
+\end{minipage}
