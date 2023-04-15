@@ -540,7 +540,29 @@ In Kruskal's algorithm, we repeatedly pick the \bred{cheapest edge} of the graph
     \EndProcedure
 \end{algorithmic} \end{algorithm}
 
-To determine if $u_i, v_i$ are already connected, we can use BFS / DFS, which takes $\Theta(n)$ time \footnote{BFS / DFS takes $\Theta(m + n)$ time. Since $m \le n - 1$, this step takes $\Theta(n)$ time.}. The overall run-time would be $\Theta(m \cdot n)$. To make this algorithm more efficient, we can use disjoint sets.
+To determine if $u_i, v_i$ are already connected, we can use BFS / DFS, which takes $\Theta(n)$ time \footnote{BFS / DFS takes $\Theta(m + n)$ time. Since $m \le n - 1$, this step takes $\Theta(n)$ time.}. The overall run-time would be $\Theta(m \cdot n)$. 
+
+To make this algorithm more efficient, we can use disjoint sets.
+
+\begin{algorithm}[H] \begin{algorithmic}[1]
+    \Procedure{Kruskal}{$G$, $w$}
+        \State \cmt{Sort edges: $w(e_1) \le w(e_2) \le \cdots \le w(e_m)$}
+        \State $T = \varnothing$
+        \For $v \in G.V$
+            \State \textsc{Make-Set}$(v)$
+        \EndFor
+
+        \For {each $e_i = e_1, e_2, \ldots, e_m$}
+            \State let $(u_i, v_i) = e_i$
+            \If {$\textsc{Find-Set}(u_i) \neq \textsc{Find-Set}(v_i)$}
+                \State $T = T \cup \{ e_i \}$
+                \State \textsc{Union}$(u_i, v_i)$
+            \EndIf
+        \EndFor
+
+        \State \Return $T$
+    \EndProcedure
+\end{algorithmic} \end{algorithm}
 
 \section{Disjoint Sets}\index{Disjoint Sets}
 
@@ -568,3 +590,144 @@ To determine if $u_i, v_i$ are already connected, we can use BFS / DFS, which ta
         Return the representative element for set $S$ s.t. $x \in S$, or NIL if $x$ no such $S$ exists
     }
 \end{minipage}
+
+To check if two elements  belong  to the same set, we can simply check if they have the same representative. Note that we cannot ask for all t he elements of a given set, or for the number of elements in a set.
+
+\subsection{Implementation}
+
+\subsubsection{Implementation 1: Circular Linked List, Boolean \textit{rep}}
+
+\begin{center} \begin{tikzpicture}[
+        every node/.style={circle, fill=MyBlue, minimum size=2em},
+        every path/.style={-latex}
+    ]
+
+    \node (a) at (0, 0) {$\color{white}\hat{x}$};
+    \node (b) at (1, 0) {};
+    \node (c) at (2, 0) {};
+    \node (d) at (3, 0) {};
+
+    \path (a) edge (b)
+          (b) edge (c)
+          (c) edge (d)
+          (d) edge[bend right=30] (a);
+\end{tikzpicture} \end{center}
+
+We use a \textit{.rep} field to indicate whether a node is a representative. \textit{.rep} is set to \texttt{true} for the representative of each set, and \texttt{false} for all other nodes.
+
+\listu {
+    \item \textsc{Make-Set}$(x)$: $\Theta(1)$
+
+    We only need to create a linked list with a single node
+
+    \item \textsc{Find-Set}$(x)$: $\Theta(n)$
+    
+    We need to traverse all list nodes to find $x$ and then the representative
+
+    \item \textsc{Union}$(x, y)$: $\Theta(n_1 + n_2)$
+    
+    We need to first identify the two representatives.\footnote{If the representatives are given, \textsc{Union}$(x, y)$ is $\Theta(1)$.}
+
+    \listu {
+        \item If $x$ and $y$ share the same representative, do nothing;
+        \item Otherwise, merge the two circular liked lists via changing the \textit{next} attribute for two nodes (conveniently, we choose the representatives, but any two nodes would work), then pick a new representative for the merged set.
+    }
+}
+
+We should consider the total amortized complexity of $m$ operations. 
+
+\listu {
+    \item Upper Bound
+    
+    Given $m$ operations, we know that each list has size $\le m$. Then, each operations takes time $\mathcal{O}(m)$. In total, the amortized complexity is $\mathcal{O}(m^2)$.
+
+    \item Lower Bound
+
+    Consider $\frac{m}{3}$ \textsc{Make-Set} operations, $\frac{m}{3}$ \textsc{Union} operations, and $\frac{m}{3}$ \textsc{Find-Set} operations.
+
+    The \textsc{Make-Set} and \textsc{Union} operations take $\Omega(m)$ time. The \textsc{Find-Set} operations take $\Omega\left( \frac{m^2}{9} \right)$ time.
+    
+    Thus, the total time is $\Omega(m^2)$.
+}
+
+Thus, we can conclude that the amortized complexity of $m$ operations is $\Theta(m^2)$.
+
+\subsubsection{Implementation 2: Circular Linked List, Pointer to \textit{rep}}
+
+This is similar to implementation 1, except that we use a pointer to the representative instead of a boolean \textit{rep} field.
+
+Now, \textsc{Find-Set} takes $\Theta(1)$ time, and \textsc{Union} takes $\Theta(n_1)$ time since the \textit{.rep} field needs to be updates for one of the to-be-merged sets.
+
+\listu {
+    \item Upper Bound
+    
+    This is the same as implementation 1.
+
+    \item Lower Bound
+    
+    Consider $\frac{m}{2}$ \textsc{Make-Set} operations and $\frac{m}{2}$ \textsc{Union} operations.
+
+    Then \textsc{Union} operations would take $\displaystyle \sum_{i=1}^{\frac{m}{2}-1} i \in \Omega(m^2)$
+}
+
+\subsubsection{Implementation 3: Circular Linked List, Pointer to \textit{rep}, with \textit{size}}
+
+In this implementation, we add a \textit{size} field to \textit{rep} to keep track of the number of elements in the set. During \textsc{Union}, we merge the smaller set into the larger set, so there will be less updates to the \textit{rep} field. We then update the \textit{size} field for the representative of the merged set.
+
+\listu {
+    \item Upper Bound
+
+    For any sequence of $m$ operations, let $n$ be the number of \textsc{Make-Set} operations. Then, the total time for all \textsc{Union} operations is less than or equal to the total number of updates to the \textit{rep} field, for all nodes.
+
+    For each element $x$, $x.\textit{rep}$ is updated exactly when the set that contains $x$ is smaller (or the same size) than the other set. Thus, this set must at least double in size after the \textsc{Union} operation. Since there are n \textsc{Make-Set} operations, there can be at most $\log n$ updates to the \textit{rep} attribute for every set.
+
+    In total, the amortized complexity is in $\mathcal{O}(n \log n + m) \in \mathcal{m \log n}$.
+
+    \item Lower Bound
+
+    %TODO: lower bound
+}
+
+\subsubsection{Implementation 4: Inverted Trees}
+
+Each node has \textit{parent} attribute, and representative is the root of the tree ($\textit{root.parent} = \textit{root}$). These trees do not have to be binary trees.
+
+\listu {
+    \item \textsc{Make-Set}$(x)$: $\Theta(1)$
+    
+    We only need to create a tree with a single node
+
+    \item \textsc{Find-Set}$(x)$: $\Theta(n)$
+    
+    We need to fallow \textit{parent} pointers to find the representative. The time depends on how deep the chain / tree is.
+
+    \item \textsc{Union}$(x, y)$: $\Theta(n)$
+    
+    We need to find the two representatives first via \textsc{Find-Set}, change one of their \textit{parent} pointer to point to the other representative (one more level is added to the chain/tree).
+}
+
+Overall, the total worst case of $m$  operations is $\Theta(m^2)$, as it is possible for us to generate a single chain. 
+
+\subsubsection{Implementation 5: Inverted Trees, with \textit{size}}
+
+We are using the same \term{union by weight} idea as implementation 3, Overall, the total worst case running time is $\Theta(m \log m)$.
+
+\subsubsection{Implementation 6: Inverted Trees Path Compression}
+
+The problem is not the total size but rather the height, we want to keep things as close to the root as possible.
+
+\textsc{Find-Set}$(x)$ would follow the pointers, as before, but also add constant-time work to edit the nodes it visits on its way to all point to the root directly as their \textit{parent} attribute. Then, we just need to perform \textsc{FIND-SET}$(x)$ on the bottom of every long chain formed to compress.
+
+\subsubsection{Implementation 7: Inverted Trees Path Compression, with \textit{rank}}
+
+This is a ``\term{union-by-rank}'' idea where rank is an upper bound on height. For \textsc{Make-Set} and \textsc{Union}, the rank can be treated as the same as the height. However, due to path compression, the height may get smaller (we don't want to keep track of/compute that).
+
+During \textsc{Union}, make the root with smaller rank a child of the other tree.
+
+\listu {
+    \item If $r_2 < r_1$, make tree with rank $r_2$ a child of tree with rank $r_1$. $r_1$ does not change.
+    
+    \item If $r_1 = r_2$, make tree with rank $r_2$ a child of tree with rank $r_1$, and increment $r_1$ by 1.
+}
+
+Overall, the total worst case run-time of $m$ operations if $\Theta(m \log^* m)$, where $\log^* m$ is the iterated logarithm \footnote{Intuitively, the iterated logarithm represents the number of times the logarithm function must be iteratively applied before the result is less than or equal to 1. For example, $\log^*2 = 1$, $\log^*2^2 = \log^*4 = 1$, $\log^*16 = 3$, $\log^* 2^{16} = 1 + \log^*{16} = 4$, $\log^* 2^{65536} = 1 + \log^* 65536 = 1 + \log^* 2^{16} = 5$}. 
