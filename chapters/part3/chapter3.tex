@@ -1,1 +1,162 @@
 \chapter{Lower Bounds}
+
+For upper bound $U(n)$ on problem complexity, we just need ONE algorithm with worst-case time $\Theta(U(n))$. For instance, the sorting has problem complexity $\mathcal{O}(n \log n)$ because heap sort takes time $\Theta(n \log n)$.
+
+For lower bound $L(n)$ on problem complexity, we need a general argument that \bred{every} algorithm takes worst-case time $\Omega(L(n))$. The goal is to prove that every algorithm that solves problem $P$ requires time $\Omega(g(n))$ for some function $g(n)$. In contrast to upper bounds, we want our lower bounds $g(n)$ to be as large as possible.
+
+Our algorithm is optimal with respect to worst-case time complexity when the bounds match. Lower bounds are usually proven only for a certain class of algorithms.
+
+\section{Comparison-Based Algorithms}
+
+A comparison-based algorithm is an algorithm that uses comparisons (for example, $>$, $\ge$, $<$, $\le$, $=$, $\neq$, 3-way comparisons) on the input values with each other to solve a problem. For example, sorting is a comparison-based algorithm because it uses comparisons to determine the order of elements. These algorithms can be represented in the form of \term{comparison trees}. 
+
+It is conventional to use the same comparison operator in every node when possible. A single comparison tree can only represent the behaviour of an algorithm for a fixed input size. Each input size corresponds to a different tree (with a common structure). Then, an algorithm would lead to a family of comparison trees (one for each input size). For any specific input, the execution of the algorithm can be traced in the decision tree as a path from the root to a leaf node.
+
+\listu {
+    \item Internal nodes (nodes with children) represent comparisons made by the algorithm: the root is the first comparison, its children the next comparison (depends on the result of the first), and so on.
+    \item Edges show the outcome/result of each comparison
+    \item External nodes (leaves) show the output of the algorithm (different nodes can have the same value since the algorithm can arrive at the same output in different ways).
+}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        every node/.style={text centered},
+    ]
+
+    \node[circle, fill=MyBlue] (a1) at (0,2) {\color{white}$x: A[1]$};
+    \node[circle, fill=MyBlue] (a0) at (-2,0) {\color{white}$x: A[0]$};
+    \node[circle, draw, color=DarkGreen] (1) at (0,0) {$1$};
+    \node[circle, fill=MyBlue] (a2) at (2,0) {\color{white}$x: A[2]$};
+    \path (a1) edge node[above] {$\color{MyRed}=$} (1)
+          (a1) edge node[above] {$\color{MyRed}<$} (a0)
+          (a1) edge node[above] {$\color{MyRed}>$} (a2);
+
+    \node[circle, color=DarkGreen] (a0l) at (-3,-2) {$-1$};
+    \node[circle, draw, color=DarkGreen] (a0m) at (-2,-2) {$0$};
+    \node[circle, color=DarkGreen] (a0r) at (-1,-2) {$-1$};
+    \path (a0) edge node[above] {$\color{MyRed}<$} (a0l)
+          (a0) edge node[above] {$\color{MyRed}=$} (a0m)
+          (a0) edge node[above] {$\color{MyRed}>$} (a0r);
+
+    \node[circle, color=DarkGreen] (a2l) at (1,-2) {$-1$};
+    \node[circle, draw, color=DarkGreen] (a2m) at (2,-2) {$2$};
+    \node[circle, color=DarkGreen] (a2r) at (3,-2) {$-1$};
+    \path (a2) edge node[above] {$\color{MyRed}<$} (a2l)
+          (a2) edge node[above] {$\color{MyRed}=$} (a2m)
+          (a2) edge node[above] {$\color{MyRed}>$} (a2r);
+    \end{tikzpicture}
+\end{figure}
+
+The number of comparisons performed by the algorithm on any innput is equal to the length of its execution path. 
+
+\listu {
+    \item The worst-case time complexity is proportional to the height of the tree
+    \item The average-case time complexity is proportional to the average depth of the leaves
+}
+
+For any problem that has at least $K$ different outcomes, every decision tree for the algorithm contains at least $K$ leaves (at least 1 leaf for each outcome). In any tree with $K$ leaves and fixed branching factor has height $\Omega(\log K)$.
+
+\example {
+    Consider searching a sorted list.
+
+    Let $P_1$ be such problem. 
+
+    \listu {
+        \item Input: a sorted list $A$, a value $x$
+        \item Output: index $i$ such that $A[i] = x$ or $-1$ if $x$ is not in $A$
+    }
+
+    Every comparison tree has at least $1$ leaf for each outcome ($\ge n + 1$ since $n$ elements and $x$ could be not in the list)
+
+    Then, the worst-case run-time is $\Omega(\text{height}) = \Omega(\log(\text{number of leaves})) = \Omega( \log(n + 1) )$.
+}
+
+\example {
+    Consider sorting a list. 
+
+    Let $P_2$ be such problem.
+
+    \listu {
+        \item Input: a list $A$ of $n$ elements
+        \item Outcome: permutation of $[0, 1, \dots, n-1]$, such that $A[i]$ represents the position of $A[i]$ in the sorted list
+    }
+
+    The number of leaves $\ge$ the number of permutations $= n!$. 
+
+    The height of the comparison tree $\ge \log(n!)$.
+
+    Then, the worst-case run-time is $\Omega(\log(n!)) = \Omega(n \log n)$.
+}
+
+\section{Information Theory Lower Bounds}
+
+$\begin{aligned}[t]
+    \text{worst-case runtime} & = \text{height of comparison tree}           \\
+                              & \ge \log(\text{number of leaves})            \\
+                              & \ge \log(\text{number of possible outcomes}) \\
+                              & \ge \log(\text{number of outputs})           \\
+\end{aligned}$
+
+\example {
+    Consider searching an unsroted list.
+
+    Let $P_3$ be such problem.
+
+    \listu {
+        \item Input: an unsorted list $A$, a value $x$
+        \item Output: index $i$ such that $A[i] = x$ or $-1$ if $x$ is not in $A$
+    }
+
+    By applying information theory lower bound, since the comparison tree has st least $n + 1$ leaves (one for each possible output), we have $\text{worst case runtime} \ge \log(n + 1)$
+}
+
+\section{Adversary / Adversarial Arguments}
+
+The goal is to show that every correct algorithm has a worst-case running time $\ge L(n)$. In practice, we often show the contrapositive: if there is an algorithm with running time $\le L(n)$, then the algorithm is incorrect. 
+
+runtime = count key operations to use correct, exact lower bounds. 
+
+\example {
+    Consider searching an unsorted list.
+
+    We count the number of comparisons ($x \overset{?}{=} A[j]$)
+
+    Try $L(n) = n$ because we know how to solve within $n$ comparisons. We prove all algorithms that makes $< n$ comparisons are incorrect. 
+
+    Consider one such algorithm. We work through the comparison tree. 
+
+    \listu {
+        \item For each comparison $x \overset{?}{=} A[j]$, set $A[j] \neq x$, go down the \texttt{False} branch
+        \item When we reach the leaf, there are at most $n - 1$ elements set in $A$. There is at least one element $A[i]$ whose value is not set.
+        \listu {
+            \item If the algorithm returns $i$, let $A[i] = 0 \neq x$
+            \item If the algorithm returns $-1$, let $A[i] = 1 = x$
+        }
+
+        In either case, this algorithm is incorrect.
+    }
+}
+
+\example {
+    Consider Finding the maximum element in au unsorted list.
+
+    \listu {
+        \item Input: an unsorted list $A$ of $n$ elements
+        \item Output: index $i$ such that $A[i] \ge A[j]$ for all $i \in \{ 0, 1, \dots, n-1 \}$
+    }
+
+    By applying the information theory lower bound, we have $\text{worst-case runtime} \ge \Omega(\log(n))$
+
+    For the adversary argument, the algorithm requires less than $n - 1$ comparisons to find the maximum element.
+
+    We start at the root and traverse the comparison tree. 
+    
+
+    \listu {
+        \item Every comparison $A[i] \overset{?}{<} A[j]$ eliminates one possible location for the max. 
+        \item There is at most $n - 2$ comparisons, so at most $n - 2$ positions eliminated. There is at least two potential positions for the maximum
+        
+        No matter which index is output, there is at least one index that makes it incorrect. 
+    }
+}
